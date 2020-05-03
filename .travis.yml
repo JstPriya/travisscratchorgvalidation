@@ -17,8 +17,11 @@ before_script:
 - export TESTLEVEL=NoTestRun
 - sfdx --version
 - sfdx plugins --core
-script:
 - sfdx force:auth:jwt:grant --instanceurl https://login.salesforce.com  --clientid
-  $CONSUMERKEY --jwtkeyfile assets/server.key --username $USERNAME --setalias DevHubOrg
-- sfdx force:source:deploy --wait 10 -p $DEPLOYDIR --targetusername DevHubOrg  --testlevel
-  $TESTLEVEL --checkonly
+$CONSUMERKEY --jwtkeyfile assets/server.key --username $USERNAME --setalias DevHubOrg
+script:
+- sfdx force:org:create -v DevHubOrg -s -f config/project-scratch-def.json -a ciorg --wait 2
+- sfdx force:org:display -u ciorg
+- sfdx force:source:push -u ciorg
+- sfdx force:apex:test:run -u ciorg --wait 10
+- sfdx force:org:delete -u ciorg -p
