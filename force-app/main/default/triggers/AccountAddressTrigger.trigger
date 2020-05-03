@@ -4,5 +4,5 @@ trigger AccountAddressTrigger on Account (before insert,before update) {
             a.ShippingPostalCode=a.BillingPostalCode;
         }
     }
-	//test
+	//testing
 }
